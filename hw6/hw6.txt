@@ -1,0 +1,137 @@
+Gianluca Bonanno
+
+1)	
+Indicate the binding time for each of the following
+
+For C
+
+Number of built-in functions is bound when the language is designed
+
+Variable declaration is bound at compile time
+
+Max length of a string is bound at language implementation time
+
+C doesn't have nested subroutines
+
+The address of a particular library routine is bound by the linker and may not be known until
+run time
+
+Total amount of space occupied by program code and data is bound at run time because it could 
+depend on input given at run time
+
+
+2)
+
+a)
+
+b)
+
+The stack grows downwards (pow is at -4, base is at -8)
+
+c)
+file included
+
+3)
+The optimized assembly has noticeably less instructions. It uses .p2align. It also uses the rep
+instruction for recursion instead of calling powF again.
+
+
+4)
+Best fit should result in lower external fragmentation. External fragmentation occurs 
+when you have memory available but it is not contiguous. Best fit will attempt to fill in all the smallest
+spaces in memory possible. This will result in less external fragmentation. External fragmentation
+relies on having contiguous memory that is not large enough for the amount you want to allocate.
+
+5)
+The complexity of first fit would be O(n) where n is the number of blocks of memory available. 
+This is because you have to loop through all of the available blocks to find the first block that has
+sufficient space for allocation.
+ 
+You could optimize first fit by keeping several lists of blocks with size ranges. If you need to allocate memory
+you don't need to search through lists with a a maximum size less than the amount of memory you need.
+The complexity would still be O(n) in the worst case.
+
+6)
+What is the principal purpose of generics? In what sense do generics serve a
+broader purpose in C++ and Ada than they do in Java and C#?
+
+Generics are a solution to having to rewrite subroutines for each different object type. They allow you to declare 
+subroutines whose parameter types are incompletely specified but type safe. 
+
+
+7)
+Explain the distinction between the lifetime of a name-to-object binding and
+its visibility.
+
+The period of time between the creation and destruction of a name to object object binding is called the
+binding's lifetime. The visibility of a binding is how much of the rest of the program can access it.
+
+What do we mean by the scope of a name-to-object binding?
+
+The region of the program where a binding is active
+
+Give three concrete examples drawn from programming languages with
+which you are familiar in which a variable is live but not in scope.
+
+In Java, private data members of an object are live but not in scope outside of the object.
+
+In C, a static variable inside of a function is live but not in scope outside of the function
+
+In Ada, if procedure P has a local variable x, and there is a global variable named x, the global variable x
+will be live but not in scope inside of P.
+
+
+8)
+As part of the development team at MumbleTech.com, Janet has written a
+list manipulation library for C that contains, among other things, the code
+in Figure 3.17.
+
+a)
+The reverse function creates a new list. There is a memory leak here. As he loops through he uses up
+the entire heap and the program crashes.
+
+b)
+delete_list will solve the memory leak problem because it reclaims the list nodes. However, this also
+creates dangling references which is why his output is corrupted.
+
+9)
+What does this program print if the language uses static scoping? What does
+it print with dynamic scoping? Why?
+
+Static scoping
+1122
+
+because setx(2) in the second procedure sets the global variable equal to 2.
+
+Dynamic scoping
+1121
+
+because set_x(2) in the second procedure sets the local variable equal to 2 but the global variable remains 1
+in the final print
+
+10)
+Consider the programming idiom illustrated in Example 3.22. One of the
+reviewers for this book suggests that we think of this idiom as a way to
+implement a central reference table for dynamic scoping. Explain what is
+meant by this suggestion.
+
+We can achieve the same effect of dynamic scoping with static scoping by following this idiom.
+The example saves the old value and introduces a new one. Then once the lifetime of the new value is over, the old value becomes visible again.
+
+11)
+A drawback of reference counting is the problem of circular references never being deleted.
+A drawback of tracing is the tendency to "stop the world" periodically to reclaim space
+
+12)
+
+a)
+
+b)
+
+c)
+
+13)
+
+
+
+

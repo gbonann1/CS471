@@ -1,0 +1,279 @@
+(* Homework Assignment 1
+   Programming Languages
+   CS471, FALL 2016
+   Binghamton University *)
+
+(* <h1>Instructions</h1> *)
+
+(* This section deals with general submission instructions.
+
+First, grab this assignment's <a href="hw1.asn">template source file</a>. To make things easier for everyone it will contain all questions with space to answer them inside the file. You must submit all answers in this file: Any external code that is required to complete a question should be included in this file as well. NOTE: You don't have to answer inside comments for this assignment. Just place an answer in the templated between questions.
+
+You must tar and gzip your submission, which should include this file along with any code required to complete the assignment. You should name the tarball with your bmail name: The following sequence of commands should be adequate to create and tar a directory of your work -- simply replace 'acanino1' with your bmail name.
+*)
+mkdir hw1
+cd hw1
+mv PATH_TO_ASN_FILE .
+tar -cvvf acanino1_hw1.tar *
+gzip acanino1_hw1.tar
+
+(* Please follow these instructions. If anything confuses you, please send me an email and I will clarify. *)
+
+(* <h1>Homework 1</h1> *)
+
+(* Due: Wednesday  --- 11:59 PM *)
+
+(* <h3>Problem 1:</h3> 
+In class we discussed the five types of errors encountered: lexical, syntactical, static semantic, dynamic semantic, and logical. The following C program has several errors (all of which include a line comment). For each error, state which category it falls under with a short explanation. 
+
+As we discussed in class, the line between certain errors can be blurry; hence, the explanation you provide is more important than a specific "right" answer, but be brief, no more than a single sentence is required.
+*)
+
+#include <stdio.h>
+ 
+char a1; b2; // error syntactical because b2 doesn't have a type. Comma required between a1 and b2 instead of semicolon 
+int arr[10]  
+long f#r, nx; //error lexical, # is not a valid character for a variable name
+long a = 99;
+int * p;
+
+int main (void){
+      int union ;  //error lexical union is a keyword
+      int x;
+      arr[1] = x;
+      *p = 10; //error dynamic semantical - at run time you are dereferencing null pointer 
+      union = chg(a); //error lexical because union is a key word
+      return union; //error lexical because union is a key word
+}
+int chg(long  fr)  {
+     if (fr = 0) {  //error logical, setting value of fr (=) instead of checking value (==)
+	      x = 10; //error static semantical - variable x not in scope
+              arr[10] = 10; //error dynamic semantical - array out of bounds error occurs at run time
+        } else {
+             arr[1] = 1;
+        }
+    return arr[1];
+}
+
+(* <h4>Problem 1 Answer:</h4> *)
+
+(* <h3>Problem 2:</h3> 
+Download and compile <a href="powI.c">powI.c</a> to assembly code on your machine: Use the command <code>gcc -S powI.c</code>
+
+Although C is considered a high-level language it really is only a few steps up from assembly. You should be able to recognize a simple correspondence between the C code and the compiled assembly code. Annotate the generated assembly code (you may copy and paste it in this file and annotate by line): Look for the key points, there is no need to label each instruction.
+
+In particular, you should recognize and label the following:
+  1. The creation of the stack frame.
+  2. Argument storage and updates.
+  3. Local variable storage and updates.
+  4. Translation of the loop.
+  5. Some form of return result, and an exit from the function. *)
+
+(* <h4>Problem 2 Answer:</h4> *)
+
+	.file	"powI.c"
+	.text
+	.globl	powI
+	.type	powI, @function
+powI:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp  //creation of stack frame
+	.cfi_def_cfa_register 6
+	movl	%edi, -20(%rbp)
+	movl	%esi, -24(%rbp)
+	movl	$1, -4(%rbp)
+	movl	$0, -8(%rbp)
+	jmp	.L2
+.L3:
+	movl	-4(%rbp), %eax
+	imull	-24(%rbp), %eax
+	movl	%eax, -4(%rbp)
+	addl	$1, -8(%rbp)
+.L2:
+	movl	-8(%rbp), %eax
+	cmpl	-20(%rbp), %eax
+	jl	.L3
+	movl	-4(%rbp), %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	powI, .-powI
+	.ident	"GCC: (Debian 4.7.2-5) 4.7.2"
+	.section	.note.GNU-stack,"",@progbits
+
+(* <h3>Problem 3:</h3> 
+Download and compile <a href="pow_full.c">pow_full.c</a>: Use the command <code>gcc -Wall pow_full.c -o pow </code> (it's always a good idea to compile with -Wall). You may run it with any integer input <code>./pow 2 3 </code> .
+
+The function <b>powI</b> is obviously an iterative implementation of an integer power function. 
+  1. Add a new function, <b>powF</b>, that implements integer power using a <i>functional style</i>: You should recursively call <b>powF</b> and use no loops. Adjust the main function to call <b>powF</b> instead.
+  2. Briefly discuss the computation complexity of both implementations of power (big-oh notation); one sentence will do.
+  3. In a language where you have the flexibility to implement an algorithm iteratively and recursively why would you choose one over the other? 
+*)
+
+(* <h4>Problem 3 Answer:</h4> *)
+
+The complexity of powI is O(pow) because the simple for loop will execute pow times.
+The complexity of powF is 
+
+You would choose the implementation with a lower time complexity. If they have the same complexity you would choose the implementation which is easier to understand.
+
+(* <h3>Problem 4:</h3> 
+Statically typed languages have their advantages, but sometimes it really is simpler to use a dynamic language. 
+
+The following is a simple implementation of factorial in Python: <a href="fact.py">fact.py</a> *)
+#! /usr/bin/env python
+
+import sys
+
+def fact(n):
+  if n == 0:
+    return 1
+  else:
+    return n * fact(n-1)
+
+if len(sys.argv) != 2:
+  print("%s usage: [NUMBER]" % sys.argv[0])
+  exit()
+
+print(fact(int(sys.argv[1])))
+
+(* The following is a simple implementation of factorial in Ruby: <a href="fact.rb">fact.rb</a> *)
+#! /usr/bin/env ruby
+
+def fact(n)
+  return 1 if n == 0
+  return n * fact(n-1)
+end
+
+if ARGV.length != 1 
+  puts "fact.rb usage: [NUMBER]" 
+  exit
+end
+
+puts fact(ARGV[0].to_i)
+
+(* Rewrite <b>powI</b> and <b>powF</b> from pow_full.c in Python and Ruby (they will syntactically and semantically be very similar). 
+
+In particular:
+(1) Create a file named pow_full.py that contains an implementation of powI and powF in Python.
+(2) Create a file named pow_full.rb that contains an implementation of powI and powF in Ruby.
+
+Make sure to place the code in this file as well. *)
+
+(* <h4>Problem 4 Answer:</h4> *)
+
+(* <h3>Problem 5:</h3> 
+In your local implementation of C, what is the limit on the size of integers? (You can use /usr/include/limits.h to figure out the range of values of type int.)  What happens in the event of arithmetic overflow? What are the implications of size limits on the portability of programs from one machine/compiler to another? How do the answers to these questions differ for Java? for Python? for Haskell? *)
+
+(* <h4>Problem 5 Answer:</h4> *)
+
+On my machine the limit on the size of integers is 32 bits. When overflow occurs the signed int becomes negative 2^31. Because the size limit of integers differs based on machine, you cannot guarantee that the same code will have the same behavior on a different machine. In Java, an int is always 32 bits because java code needs to be portable in order to run on all machines.
+
+(* <h3>Problem 6:</h3> 
+In class we discussed how the <i>traditional</i> definition of a compiler is rarely used in practice anymore -- some exceptions obviously still apply; in reality, many languages use a combination of compilation and interpretation techniques.
+
+Pick a language that <b>is not</b> on the following list (i.e, pick a modern language that we have not discussed), and discuss its compilation process. Part of the point of this question is for you to explore how some languages you are not familiar with work, so spend a little time doing some research.
+- C
+- C++
+- Java
+- Ruby
+- Python
+- Go
+- Fortran
+- Pascal
+*)
+
+
+(* <h4>Problem 6 Answer:</h4> *)
+
+(* <h3>Problem 7:</h3> 
+Operator precedence and associativity are often subtle details that are overlooked when using a language (and require careful treatment when implementing a compiler). One way around this issue is to use prefix or postfix notation. This is not as foreign as you think, every function call is in prefix notation: 2 powI 3 is just as valid as + 2 3.
+
+Rewrite the expressions (a-d) below in prefix notation according to the precedence and associativity rules given (3 is highest):
+<table style="width:25%">
+<tr><td>Binary Op</td><td>Precedence</td><td>Associativity</td></tr>
+<tr><td>*</td><td>3</td><td>Left</td></tr>
+<tr><td>/</td><td>3</td><td>Left</td></tr>
+<tr><td>+</td><td>2</td><td>Left</td></tr>
+<tr><td>@</td><td>1</td><td>Right</td></tr>
+</table>
+
+The algorithm for rewriting is very straightforward:
+(1) Paranthesis each expression using the rules for precedence and associativity.
+(2) For each paranthesized expression, move the operator to the left of the operands for prefix notation (right of the operands for postfix).
+(3) Remove the parantheses.
+
+The operands will have the same order in the resulting expressions (due to the restriction that the operators are NOT commulatative).
+
+The expressions:
+(a) z + w @ x @ y
+(b) w + x + y * z
+(c) w * x * y @ z
+(d) w / x * y / z *)
+
+(* <h4>Problem 7 Answer:</h4> *)
+
+a) +z^^wxy
+b) ++wx*yz 
+c) **wx^yz
+d) /*/wxyz
+
+(* <h3>Problem 8:</h3> 
+Repeat Problem 7, but use <b>postfix</b> notation instead. *)
+
+(* <h4>Problem 8 Answer:</h4> *)
+
+a) zwx^y^+
+b) wx+yz*+
+c) wx*yz^*
+d) wx/y*z/
+
+(* <h3>Problem 9:</h3> 
+
+Page 36 problem 1.1 a-e.
+*)
+
+(* <h4>Problem 9 Answer:</h4> *)
+
+a) variable name with a # in it
+b) missing a curly bracket }
+c) trying to use a variable that is not initialized
+d) index out of bounds exception
+e) calculation that results in integer overflow
+(Java)
+
+(* <h3>Problem 10:</h3> 
+
+[Rosen,Discrete Mathematics and Its Applications 5th ed., pg 273 #48] "Consider the following inductive definition of a version of Ackermann's function.  This function was named after Wilhelm Ackermann, a German mathematician who was a student of the great mathematician David Hilbert.  Ackermann's function plays an important role in the theory of recursive functions and in the study of complexity of certain algorithms involving set unions."  In the early days of  imperative languages, Ackermann's function was used to measure the recursion capability of a compiler.
+
+The Ackermann Number N of the compiler as the largest N for which
+          ack (3,N)
+gives an answer without a stack overflow.  In earlier decades a variation had been used as one of the benchmarking algorithms.  (There are several different variants of this function.  All are called Ackermann's functions and their values do NOT have to agree!)  
+
+
+<code>
+ack(m,n) =    n + 1                   if m = 0
+ack(m,n) =    ack(m-1,1)              if n = 0 and m > 0
+ack(m,n) =    ack(m-1,ack(m, n-1))    if n > 0 and m > 0
+</code>
+
+(a) What is the value of ack(1,0) ? ______
+(b) What is the value of ack(0,3) ? ______
+(c) Create a file named ack.c and implement <b>ack</b> in C. Try and find the largest Ackermann number for your program.
+(d) Create a file named ack.py and implement <b>ack</b> in Python. Try and find the largest Ackermann number for your program.
+(e) Create a file named ack.rb and implement <b>ack</b> in Ruby. Try and find the largest Ackermann number for your program. *)
+
+(* <h4>Problem 10 Answer:</h4> *)
+
+a) 2
+b) 4
+c) 14
+d) 6
+c) 9
+

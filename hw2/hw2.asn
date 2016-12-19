@@ -1,0 +1,361 @@
+(* Homework Assignment 2
+   Programming Languages
+   CS471, Fall 2016
+   Binghamton University *)
+
+(* <h1>Instructions</h1> *)
+
+(* This section deals with general submission instructions.
+
+Grab this assignment's <a href="hw2.asn">template source file</a>. To make things easier for everyone it will contain all questions with space to answer them inside the file. The code for this assignment is significantly longer than the last one, as such you DO NOT need to paste the entire contents in this file (noted at the specific questions below).
+
+You must tar and gzip your submission, which should include this file along with any code required to complete the assignment. You should name the tarball with your bmail name: The following sequence of commands should be adequate to create and tar a directory of your work -- simply replace 'acanino1' with your bmail name.
+*)
+mkdir hw2
+cd hw2
+mv PATH_TO_ASN_FILE .
+tar -cvvf acanino1_hw2.tar *
+gzip acanino1_hw2.tar
+
+(* Please follow these instructions. If anything confuses you, please send me an email and I will clarify. *)
+
+(* <h1>Homework 2</h1> *)
+
+(* <h3>Code</h3> 
+You'll need the following files to complete the assignment:
+<a href="Makefile">Makefile</a>
+<a href="arith1.c">arith1.c</a>
+<a href="arith2.c">arith2.c</a> *) 
+
+(* <h3>Problem 1:</h3> 
+Examine <code>arith1.c</code>: It contains an implementation of a simple arithmatic calculator. The following will compile and run a few test cases. *)
+make arith1
+./arith1
+1 + 2 * 3
+
+./arith1
+1 + 2 + 3
+
+(* The <code>arith1</code> language is parsed used a <b>recursive-descent</b> parser: It is fairly straightforward to determine the language's grammar from the parser. 
+
+In particular:
+(1) Using the code, give the complete grammar in BNF form 
+(2) Is the grammar left or right recursive? How does that affect the associativity of plus and mult? *)
+
+(* <h4>Problem 1 Answer:</h4> *)
+
+1)	expr ::= term
+		| term + expr
+ 	term ::= factor
+		| factor * term
+	factor ::= (expr)
+		| number
+	number ::= 1 | 2 | 3 | 4 | 5 | 6 ... 
+2)	The grammar is right recursive. This means that plus and mult are associative.
+(* <h3>Problem 2:</h3>
+
+Using the grammar you extracted in Problem 1 add two new operators,  exponents, "^",  and minus, "-" , operators to the arith1 language .  Exponent operator, "^", should have the highest precedence and "-" should have the a higher precedence than "+" and lower precedence than "*". but still be able to be overridden using parentheses as defined by the grammar. Both operators should have the same associativity as plus and times.
+
+Give the modified grammar. 
+*)
+
+(* <h4>Problem 2 Answer:</h4> *)
+
+	expr ::= minus
+		| minus + expr
+	minus ::= term
+		| term - expr
+ 	term ::= exponent
+		| exponent * term
+	exponent ::= factor
+		| factor ^ term
+	factor ::= (expr)
+		| number
+	number ::= 1 | 2 | 3 | 4 | 5 | 6 ... 
+	
+	
+
+(* <h3>Problem 3:</h3> 
+Write the left derivation for the following expressions according to the modified grammar from Problem 2 -- It may help to draw the parse tree first.
+   a. 1 + 2 -2
+   b. 1 + 2 - 3 * 5
+   c. 2 ^ 5 ^ 2
+  
+
+NOTE: You should show only one step at a time -- as we did in class -- but may jump from number to the actual terminal number.
+For example:
+number '+' expr
+'10' '+' expr *)
+
+(* <h4>Problem 3 Answer:</h4> *)
+
+a)	expr
+	minus + expr
+	term + expr
+	exponent + expr
+	factor + expr
+	number + expr
+	1 + expr
+	1 + minus 
+	1 + term - expr
+	1 + exponent - expr
+	1 + factor - expr
+	1 + number - expr
+	1 + 2 - expr
+	1 + 2 - minus
+	1 + 2 - term
+	1 + 2 - exponent
+	1 + 2 - factor
+	1 + 2 - number
+	1 + 2 - 2
+
+b)	expr
+	minus + expr
+	term + expr
+	exponent + expr
+	factor + expr
+	number + expr
+	1 + expr
+	1 + minus
+	1 + term - expr
+	1 + exponent - expr
+	1 + factor - expr
+	1 + number - expr
+	1 + 2 - expr
+	1 + 2 - minus
+	1 + 2 - term
+	1 + 2 - exponent * term
+	1 + 2 - factor * term
+	1 + 2 - number * term
+	1 + 2 - 3 * term
+	1 + 2 - 3 * exponent
+	1 + 2 - 3 * factor
+	1 + 2 - 3 * number
+	1 + 2 - 3 * 5
+
+c)	expr
+	minus 
+	term 
+	exponent 
+	factor ^ term 
+	number ^ term 
+	2 ^ term 
+	2 ^ exponent 
+	2 ^ factor  ^ term
+	2 ^ number ^ term
+	2 ^ 5 ^ term
+	2 ^ 5 ^ exponent
+	2 ^ 5 ^ factor
+	2 ^ 5 ^ number
+	2 ^ 5 ^ 2
+	
+	
+	
+
+
+
+(* <h3>Problem 4:</h3> 
+Modify <code>arith1.c</code> and add the new operators that you defined in Problem 2. Pay careful attention to the pattern between the original grammar and the associated function calls in <code>arith1.c</code>. If you have properly adjusted the grammar, it should be a straightforward modification of the original functions with the additional of a couple new functions for the new operators.
+
+You should pay careful attention to how expressions evaluate; a compile and a correct evaluation of some expressions does not mean you have modified everything correctly. Try the sample cases below. *)
+
+./arith
+1 + 2 - 2
+The result is: 1
+
+./arith
+1 + 2 - 3 * 5
+The result is: -12
+
+./arith
+2 ^ 5 ^ 2
+The result is: 33554432
+
+(* You DO NOT have to paste <code>arith1.c</code> in the template file, but you must submit the modified <code>arith1.c</code> file in the tarball that you will create for this assignment. *)
+
+(* <h4>Problem 4 Answer:</h4> *)
+
+(* <h3>Problem 5:</h3> 
+Examine <code>arith2.c</code>: It contains another implementation of a simple arithmetic calculator. The following will compile and run a few test cases. *)
+make arith2
+./arith2
+1 + 2 * 3
+
+./arith2
+1 + 2 + 3
+
+(* The <code>arith2</code> language is parsed using a slightly different technique, although it is still considered a <b>recursive-descent</b> parser. Pay careful attention to the way while loops are used to parse, instead of pure recursion. Thinking in terms of EBNF (hint: kleene star) may help determine the difference from the previous grammar.
+
+In particular:
+(1) Using the code, give the complete grammar in BNF or EBNF form 
+(2) Is the grammar left or right recursive? How does that affect the associativity of plus and mult? *)
+
+(* <h4>Problem 5 Answer:</h4> *)
+
+1)	expr ::= term { + term}
+	term ::= factor { * factor}
+	factor ::= (expr) | number
+	number ::= 1 | 2 | 3 | 4 | 5 | 6 ...
+
+2)	The grammar is right recursive. Plus and mult are associative.
+	
+
+(* <h3>Problem 6:</h3> 
+Using the grammar you extracted in Problem 5 add two new operators to the arith2 language. The first, minus, should have higher precedence than plus, but lower precedence than mult. The second, exponent, ^, should have higher precedence than mult, but still be able to be overridden using parentheses as defined by the grammar. Both operators should have the same associativity as plus and times.
+
+Give the modified grammar. *)
+
+(* <h4>Problem 6 Answer:</h4> *)
+
+	expr ::= minus { - minus }	
+	minus ::= term { + term }
+ 	term ::= exponent { ^ exponent }
+	exponent ::= factor { * factor }
+	factor ::= (expr)
+		| number
+	number ::= 1 | 2 | 3 | 4 | 5 | 6 ... 
+
+(* <h3>Problem 7:</h3> 
+Write the left derivation for the following expressions according to the modified grammar from Problem 6 -- It may help to draw the parse tree first.
+
+  a: 1 + 2 - 2
+  b:  1 + 2 - 3 * 5
+  c: 2 ^ 5 ^ 2
+
+
+NOTE: You should show only one step at a time -- as we did in class -- but may jump from number to the actual terminal number.
+For example:
+number '+' expr
+'10' '+' expr *) 
+
+(* <h4>Problem 7 Answer:</h4> *)
+
+a)	expr
+	minus - minus
+	term + term - minus
+	exponent + term - minus
+	factor + term - minus
+	number + term - minus
+	1 + term - minus
+	1 + exponent - minus
+	1 + factor - minus
+	1 + number - minus
+	1 + 2 - minus
+	1 + 2 - term
+	1 + 2 - exponent
+	1 + 2 - factor
+	1 + 2 - number
+	1 + 2 - 2
+
+b)	expr
+	minus - minus
+	term + term - minus
+	exponent + term - minus
+	factor + term - minus
+	number + term - minus
+	1 + term - minus
+	1 + exponent - minus
+	1 + factor - minus
+	1 + number - minus
+	1 + 2 - minus
+	1 + 2 - term
+	1 + 2 - exponent
+	1 + 2 - factor * factor
+	1 + 2 - number * factor
+	1 + 2 - 3 * factor
+	1 + 2 - 3 * number
+	1 + 2 - 3 * 5
+
+c)	expr
+	minus
+	term
+	exponent ^ exponent ^ exponent
+	factor ^ exponent ^ exponent
+	number ^ exponent ^ exponent
+	2 ^ exponent ^ exponent
+	2 ^ factor ^ exponent
+	2 ^ number ^ exponent
+	2 ^ 5 ^ exponent
+	2 ^ 5 ^ factor
+	2 ^ 5 ^ number
+	2 ^ 5 ^ 2
+		
+
+(* <h3>Problem 8:</h3> 
+Modify <code>arith2.c</code> and add the new operators that you defined in Problem 6. Pay careful attention to the pattern between the original grammar and the associated function calls in <code>arith2.c</code>. If you have properly adjusted the grammar, it should be a straightforward modification of the original functions with the additional of a couple new functions for the new operators.
+
+You should pay careful attention to how expressions evaluate; a compile and a correct evaluation of some expressions does not mean you have modified everything correctly. Try the sample cases below. *)
+./arith
+1 + 2 - 2
+The result is: 1
+
+./arith
+1 + 2 - 3 * 5
+The result is: -12
+
+./arith
+2 ^ 5 ^ 2
+The result is:
+1024
+
+(* You DO NOT have to paste <code>arith2.c</code> in the template file, but you must submit the modified <code>arith2.c</code> file in the tarball that you will create for this assignment. *)
+
+(* <h4>Problem 8 Answer:</h4> *)
+
+(* <h3>Problem 9:</h3> 
+Write regular expressions to match the following -- You should test your solutions using <a href="http://rubular.com">rubular</a>.
+
+(1) C identifiers: A C identifier must start with an alpha character or an underscore, and may be followed by alphanumeric characters or the underscore.
+(2) Strings: A string must start and end with an double quote and may contain any character except the double quote itself; however, you may <i>escape</i> a double quote inside the string using \ -- i.e. "this is \" a string"
+(3) Strings over the alphabet {a,b} that contain an even number of b's. 
+(4) Strings over the alphabet {a,b,c} that contain an odd number of c's.
+
+Samples:
+The following are acceptable strings for (3): abb, bab, bbaaa, ababa; the following should be rejected for (3): abbb, babb, bbabbb.
+
+The following are acceptable string for (4): cabab, ccaaabc, ccc; the following should be rejected for (4): cababc, ccaaab, bbabcc. 
+
+NOTE: Rubular will feed the entire input at each character into the regex. If we have a regex <code>aa*</code> and give rubular the input "baa" it will match "aa". The entire string does not match however, which is correct and how you should view the regular expression. For example, if you were asked to write a regex that one or more a, and match "baa" on rubular then you have done something wrong.
+*)
+
+
+
+(* <h3>Problem 9 Answer: </h3> *)
+
+a) \w+
+b) ["]([^"\\]*|([\\]["])*)*["]
+c) a*(ba*ba*)*
+d) (a*b*)*c(a*b*)*(c(b*a*)*c(b*a*)*)*
+
+(* <h3>Problem 10:</h3> 
+Both _Bool and bool are available in the ISO C standard published in 2011.  Briefly explain:
+
+(1) What are they used for?
+(2) Why do both exist?
+(3) Is one better than the other? Why?
+*)
+
+(* <h3>Problem 10 Answer: </h3> *)
+
+1) They are used to store the values true and false (1, 0)
+2) bool is an alias for _Bool when you include stdbool.h.  This is
+because bool isn't reserved by default
+3) it is good to use bool because including stdbool.h ensures that you
+won't use bool, true, and false as variable names.
+
+(* <h3>Problem 11:</h3> 
+
+Page 69 cyu 19:
+What are pragmas? Why are they processed by the scanner?  Briefly, if you are a language designer what are the trade off of providing pragmas in a language?
+
+*)
+
+(* <h3>Problem 11 Answer: </h3> *)
+
+Pragmas are constructs that provide directives or hints to the
+compiler. Pragmas can appear anywhere in the source program like
+comments, and are therefore handled by the scanner. Pragmas can be
+helpful to turn certain run time checks on or off and to improve
+performance . Despite these benefits, pragmas can also change program
+semantics. For example, in Ada, pragmas can turn off type checking
+which can lead to problems.

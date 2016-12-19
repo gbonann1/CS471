@@ -1,0 +1,29 @@
+CS471 - Programming Language
+Author: Bonanno, Gianluca (gbonann1)
+hw 7
+1)
+
+2)
+6.1
+
+These statements are not contradictory. For example, if you are adding the result of 3 functions in a
+single line. IE: x = func1() + func2() + func3(); The programming language forces you to first add
+func1() and func2() if it is left associative. However, whether you calculate func1 or func2 first
+is up to the compiler.
+
+3)
+6.4
+
++ 1 * 2 3 4
+could be 1 + (2*3) + 4 or 1 + (2*3*4)
+
+Fixed: Issues of precedence and associativity do not occur with prefix or postfix notation when
+the operator is confined to a strict number of operands
+
+4)
+6.7
+
+
+
+5)
+6.9
